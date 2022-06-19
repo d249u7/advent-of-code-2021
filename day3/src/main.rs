@@ -65,7 +65,7 @@ fn main() {
                         .unwrap()
                         == oxygen_most_common
                 })
-                .collect::<Vec<_>>();
+                .collect::<Vec<&str>>();
         }
 
         if co2_scrubber_rating_binaries.len() > 1 {
@@ -85,7 +85,7 @@ fn main() {
                         .unwrap()
                         != co2_most_common
                 })
-                .collect::<Vec<_>>();
+                .collect::<Vec<&str>>();
         }
 
         idx += 1;
