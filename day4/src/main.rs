@@ -1,4 +1,4 @@
-use std::{error::Error, fs, num::ParseIntError};
+use std::fs;
 
 const GRID_SIZE: usize = 5;
 
@@ -22,6 +22,7 @@ struct Line {
 #[derive(Clone, Debug)]
 struct Matrix {
     rows: Vec<Line>,
+    did_win: bool,
 }
 
 impl Cell {
@@ -64,7 +65,10 @@ impl Line {
 
 impl Matrix {
     pub fn new(rows: Vec<Line>) -> Self {
-        Self { rows }
+        Self {
+            rows,
+            did_win: false,
+        }
     }
 
     pub fn mark_cell(&mut self, val: &str) {
@@ -84,7 +88,7 @@ impl Matrix {
         }
     }
 
-    pub fn check_winner(&self) -> bool {
+    pub fn check_winner(&mut self) -> bool {
         let mut is_winner = false;
 
         self.rows.clone().into_iter().for_each(|row| {
@@ -95,6 +99,7 @@ impl Matrix {
         });
 
         if is_winner {
+            self.did_win = true;
             return is_winner;
         }
 
@@ -109,6 +114,7 @@ impl Matrix {
                 });
 
             if marked_count == 5 {
+                self.did_win = true;
                 is_winner = true;
             }
         }
@@ -164,16 +170,18 @@ fn main() {
         matrices.push(matrix);
     }
     // println!("{:?}", matrices);
-
+    let mut res;
     for input in inputs {
         for matrix_idx in 0..matrices.len() {
             matrices[matrix_idx].mark_cell(input);
+            if matrices[matrix_idx].did_win {
+                continue;
+            }
             match matrices[matrix_idx].check_winner() {
                 true => {
                     let sum = matrices[matrix_idx].get_sum();
-                    let res = sum * input.parse::<i64>().unwrap();
+                    res = sum * input.parse::<i64>().unwrap();
                     println!("{:?}", res);
-                    break;
                 }
                 false => {}
             }
